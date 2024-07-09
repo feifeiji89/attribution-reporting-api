@@ -723,6 +723,8 @@ function channelCapacity(s: Source, ctx: SourceContext): void {
 
   const config = new privacy.Config(
     s.maxEventLevelReports,
+    s.attributionScopeLimit ?? 1,
+    s.maxEventStates,
     perTriggerDataConfigs
   )
 
