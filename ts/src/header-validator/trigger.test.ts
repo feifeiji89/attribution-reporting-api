@@ -19,6 +19,11 @@ const testCases: jsontest.TestCase<Trigger>[] = [
         "filters": {"x": []},
         "not_filters": {"y": []}
       }],
+      "aggregatable_buckets": [{
+        "bucket": "bucket",
+        "filters": {"x": []},
+        "not_filters": {"y": []}
+      }],
       "aggregatable_source_registration_time": "include",
       "aggregatable_trigger_data": [{
         "filters": {"a": ["b"]},
@@ -53,6 +58,23 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       aggregatableDedupKeys: [
         {
           dedupKey: 123n,
+          positive: [
+            {
+              lookbackWindow: null,
+              map: new Map([['x', new Set()]]),
+            },
+          ],
+          negative: [
+            {
+              lookbackWindow: null,
+              map: new Map([['y', new Set()]]),
+            },
+          ],
+        },
+      ],
+      aggregatableBuckets: [
+        {
+          bucket: 'bucket',
           positive: [
             {
               lookbackWindow: null,
@@ -1692,6 +1714,61 @@ const testCases: jsontest.TestCase<Trigger>[] = [
         msg: 'must be >= 1 and <= uint32 max (4294967295)',
       },
     ],
+  },
+
+  // Aggregatable bucket.
+  {
+    name: 'aggregatable-buckets-wrong-type',
+    input: `{"aggregatable_buckets": 1}`,
+    expectedErrors: [
+      {
+        path: ['aggregatable_buckets'],
+        msg: 'must be a list',
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-buckets-value-wrong-type',
+    input: `{"aggregatable_buckets": [1]}`,
+    expectedErrors: [
+      {
+        path: ['aggregatable_buckets', 0],
+        msg: 'must be an object',
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-bucket-wrong-type',
+    input: `{"aggregatable_buckets": [{
+      "bucket": 1
+    }]}`,
+    expectedErrors: [
+      {
+        path: ['aggregatable_buckets', 0, 'bucket'],
+        msg: 'must be a string',
+      },
+    ],
+  },
+  {
+    name: 'aggregatable_bucket-missing-bucket-name',
+    input: `{"aggregatable_buckets": [{
+      "filters": [],
+      "not_filters": []
+    }]}`,
+    expectedErrors: [
+      {
+        path: ['aggregatable_buckets', 0, 'bucket'],
+        msg: 'required',
+      },
+    ],
+  },
+  {
+    name: 'aggregatable_bucket-empty-filter',
+    input: `{"aggregatable_buckets": [{
+      "bucket": "1",
+      "filters": [],
+      "not_filters": []
+    }]}`,
   },
 ]
 

@@ -3,6 +3,7 @@ import { SourceType } from '../source-type'
 import * as context from './context'
 import { Maybe } from './maybe'
 import {
+  AggregatableBucketBudget,
   AggregationKeys,
   AttributionScopes,
   EventReportWindows,
@@ -29,6 +30,7 @@ import {
   RegistrationContext,
   RegistrationOptions,
   UINT32_MAX,
+  aggregatableBucketLength,
   aggregatableDebugReportingConfig,
   aggregatableKeyValueValue,
   aggregationKeyIdentifierLength,
@@ -234,6 +236,28 @@ function aggregationKeys(j: Json, ctx: Context): Maybe<AggregationKeys> {
     ctx,
     aggregationKey,
     constants.maxAggregationKeysPerSource
+  )
+}
+
+function aggregatableBucket(
+  [bucket, j]: [string, Json],
+  ctx: Context
+): Maybe<number> {
+  if (!aggregatableBucketLength(bucket, ctx, 'bucket ')) {
+    return Maybe.None
+  }
+  return aggregatableKeyValueValue(j, ctx)
+}
+
+function aggregatableBucketBudget(
+  j: Json,
+  ctx: Context
+): Maybe<AggregatableBucketBudget> {
+  return keyValues(
+    j,
+    ctx,
+    aggregatableBucket,
+    constants.maxAggregatableBucketsPerSource
   )
 }
 
@@ -727,6 +751,10 @@ function source(j: Json, ctx: Context): Maybe<Source> {
         attributionScopes: field(
           'attribution_scopes',
           withDefault(attributionScopes, null)
+        ),
+        aggregatableBucketBudget: field(
+          'aggregatable_bucket_max_budget',
+          withDefault(aggregatableBucketBudget, new Map())
         ),
 
         ...commonDebugFields,

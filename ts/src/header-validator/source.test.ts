@@ -49,6 +49,10 @@ const testCases: TestCase[] = [
         "limit": 3,
         "values": ["1"],
         "max_event_states": 4
+      },
+      "aggregatable_bucket_max_budget": {
+        "firebase": 32768,
+        "third_party": 32768
       }
     }`,
     sourceType: SourceType.navigation,
@@ -95,6 +99,10 @@ const testCases: TestCase[] = [
         values: new Set<string>('1'),
         maxEventStates: 4,
       },
+      aggregatableBucketBudget: new Map([
+        ['firebase', 32768],
+        ['third_party', 32768],
+      ]),
     }),
   },
 
@@ -3062,6 +3070,141 @@ const testCases: TestCase[] = [
       {
         path: [],
         msg: 'randomized trigger rate: 0.0024263',
+      },
+    ],
+  },
+
+  // Aggregatable bucket.
+  {
+    name: 'aggregatable-bucket-not-a-dictionary',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": ["1"]
+    }`,
+    sourceType: SourceType.navigation,
+    expectedErrors: [
+      {
+        msg: 'must be an object',
+        path: ['aggregatable_bucket_max_budget'],
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-bucket-too-long',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": 32768
+        }
+      }`,
+    sourceType: SourceType.navigation,
+    expectedErrors: [
+      {
+        msg: 'bucket exceeds max length per aggregatable bucket (51 > 50)',
+        path: [
+          'aggregatable_bucket_max_budget',
+          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        ],
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-bucket-empty',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": {
+          "": 32768
+        }
+      }`,
+    sourceType: SourceType.navigation,
+  },
+  {
+    name: 'aggregatable-buckets-too-many',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": {
+          "1": 32768,
+          "2": 32768,
+          "3": 32768,
+          "4": 32768,
+          "5": 32768,
+          "6": 32768,
+          "7": 32768,
+          "8": 32768,
+          "9": 32768,
+          "10": 32768,
+          "11": 32768,
+          "12": 32768,
+          "13": 32768,
+          "14": 32768,
+          "15": 32768,
+          "16": 32768,
+          "17": 32768,
+          "18": 32768,
+          "19": 32768,
+          "20": 32768,
+          "21": 32768
+        }
+      }`,
+    sourceType: SourceType.navigation,
+    expectedErrors: [
+      {
+        msg: 'exceeds the maximum number of keys (20)',
+        path: ['aggregatable_bucket_max_budget'],
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-bucket-budget-non-positive',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": {
+          "1": 32768,
+          "2": 0,
+          "3": -1
+        }
+      }`,
+    sourceType: SourceType.navigation,
+    expectedErrors: [
+      {
+        msg: 'must be in the range [1, 65536]',
+        path: ['aggregatable_bucket_max_budget', '2'],
+      },
+      {
+        msg: 'must be in the range [1, 65536]',
+        path: ['aggregatable_bucket_max_budget', '3'],
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-bucket-budget-exceeds-max',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": {
+          "1": 65537
+        }
+      }`,
+    sourceType: SourceType.navigation,
+    expectedErrors: [
+      {
+        msg: 'must be in the range [1, 65536]',
+        path: ['aggregatable_bucket_max_budget', '1'],
+      },
+    ],
+  },
+  {
+    name: 'aggregatable-bucket-budget-not-integer',
+    input: `{
+        "destination": "https://a.test",
+        "aggregatable_bucket_max_budget": {
+          "1": "1024"
+        }
+      }`,
+    sourceType: SourceType.navigation,
+    expectedErrors: [
+      {
+        msg: 'must be a number',
+        path: ['aggregatable_bucket_max_budget', '1'],
       },
     ],
   },

@@ -351,6 +351,20 @@ export function aggregatableKeyValueValue(
     .filter(isInRange, ctx, 1, constants.allowedAggregatableBudgetPerSource)
 }
 
+export function aggregatableBucketLength(
+  s: string,
+  ctx: Context,
+  errPrefix: string = ''
+): boolean {
+  if (s.length > constants.maxLengthPerAggregatableBucket) {
+    ctx.error(
+      `${errPrefix}exceeds max length per aggregatable bucket (${s.length} > ${constants.maxLengthPerAggregatableBucket})`
+    )
+    return false
+  }
+  return true
+}
+
 export function enumerated<T>(
   j: Json,
   ctx: Context,

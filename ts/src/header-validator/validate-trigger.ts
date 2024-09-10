@@ -4,12 +4,14 @@ import * as context from './context'
 import { Maybe } from './maybe'
 import { serializeTrigger } from './to-json'
 import {
+  AggregatableBucket,
   AggregatableDedupKey,
   AggregatableSourceRegistrationTime,
   AggregatableTriggerDatum,
   AggregatableValues,
   AggregatableValuesConfiguration,
   AggregatableValuesValue,
+  Bucket,
   DedupKey,
   EventTriggerDatum,
   FilterConfig,
@@ -104,6 +106,10 @@ export function filterPair(j: Json, ctx: context.Context): Maybe<FilterPair> {
 
 const dedupKeyField: StructFields<DedupKey, Context> = {
   dedupKey: field('deduplication_key', withDefault(uint64, null)),
+}
+
+const bucketField: StructFields<Bucket> = {
+  bucket: field('bucket', required(string)),
 }
 
 function sourceKeys(j: Json, ctx: Context): Maybe<Set<string>> {
@@ -273,6 +279,18 @@ function aggregatableDedupKeys(
   )
 }
 
+function aggregatableBuckets(
+  j: Json,
+  ctx: Context
+): Maybe<AggregatableBucket[]> {
+  return array(j, ctx, (j) =>
+    struct(j, ctx, {
+      ...bucketField,
+      ...filterFields,
+    })
+  )
+}
+
 function warnInconsistentAggregatableKeys(t: Trigger, ctx: Context): void {
   const allAggregatableValueKeys = new Set<string>()
   for (const cfg of t.aggregatableValuesConfigurations) {
@@ -376,6 +394,10 @@ function trigger(j: Json, ctx: Context): Maybe<Trigger> {
         aggregatableDedupKeys: field(
           'aggregatable_deduplication_keys',
           withDefault(aggregatableDedupKeys, [])
+        ),
+        aggregatableBuckets: field(
+          'aggregatable_buckets',
+          withDefault(aggregatableBuckets, [])
         ),
         aggregatableSourceRegistrationTime: () => aggregatableSourceRegTimeVal,
         eventTriggerData: field(

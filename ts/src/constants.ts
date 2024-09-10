@@ -104,3 +104,7 @@ export const triggerAggregatableDebugTypes: Readonly<[string, ...string[]]> = [
 ]
 
 export const defaultMaxEventStates: number = 3
+
+export const maxAggregatableBucketsPerSource: number = 20
+
+export const maxLengthPerAggregatableBucket: number = 50
