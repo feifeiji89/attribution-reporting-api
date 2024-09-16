@@ -190,7 +190,7 @@ type Source = CommonDebug &
   Priority &
   (NotFullFlexSource | FullFlexSource) & {
     aggregation_keys: { [key: string]: string }
-    aggregatable_bucket_max_budget: { [key: string]: number }
+    aggregatable_bucket_max_budget?: { [key: string]: number }
     aggregatable_report_window: number
     destination: string[]
     destination_limit_priority: string
@@ -248,9 +248,11 @@ export function serializeSource(
     ...ifNotNull('attribution_scopes', s.attributionScopes, (v) =>
       serializeAttributionScopes(v)
     ),
-    aggregatable_bucket_max_budget: opts.aggregatableBucket
-      ? Object.fromEntries(s.aggregatableBucketBudget)
-      : {},
+    ...(opts.aggregatableBucket && {
+      aggregatable_bucket_max_budget: Object.fromEntries(
+        s.aggregatableBucketBudget
+      ),
+    }),
   }
 
   return stringify(source)
@@ -387,7 +389,7 @@ function serializeAggregatableValuesConfiguration(
 type Trigger = CommonDebug &
   FilterPair & {
     aggregatable_deduplication_keys: AggregatableDedupKey[]
-    aggregatable_buckets: AggregatableBucket[]
+    aggregatable_buckets?: AggregatableBucket[]
     aggregatable_source_registration_time: string
     aggregatable_trigger_data: AggregatableTriggerDatum[]
     aggregatable_filtering_id_max_bytes: number
@@ -412,9 +414,12 @@ export function serializeTrigger(
       serializeAggregatableDedupKey
     ),
 
-    aggregatable_buckets: opts.aggregatableBucket
-      ? Array.from(t.aggregatableBuckets, serializeAggregatableBucket)
-      : [],
+    ...(opts.aggregatableBucket && {
+      aggregatable_buckets: Array.from(
+        t.aggregatableBuckets,
+        serializeAggregatableBucket
+      ),
+    }),
 
     aggregatable_source_registration_time: t.aggregatableSourceRegistrationTime,
 

@@ -53,6 +53,7 @@ function validate(): void {
       break
     case 'trigger':
       flexCheckbox.disabled = false
+      aggregatableBucketCheckbox.disabled = false
       v = trigger.validator({
         vsv: vsv.Chromium,
         fullFlex: flexCheckbox.checked,
@@ -107,7 +108,10 @@ document.querySelector('#linkify')!.addEventListener('click', () => {
   }
 
   url.searchParams.set('flex', flexCheckbox.checked.toString())
-  url.searchParams.set('aggregatableBucket', aggregatableBucketCheckbox.checked.toString())
+  url.searchParams.set(
+    'aggregatableBucket',
+    aggregatableBucketCheckbox.checked.toString()
+  )
 
   void navigator.clipboard.writeText(url.toString())
 })

@@ -20,7 +20,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
         "not_filters": {"y": []}
       }],
       "aggregatable_buckets": [{
-        "bucket": "bucket",
+        "bucket": "1",
         "filters": {"x": []},
         "not_filters": {"y": []}
       }],
@@ -75,7 +75,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       ],
       aggregatableBuckets: [
         {
-          bucket: 'bucket',
+          bucket: '1',
           positive: [
             {
               lookbackWindow: null,
