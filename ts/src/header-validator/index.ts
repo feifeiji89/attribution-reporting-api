@@ -107,7 +107,7 @@ document.querySelector('#linkify')!.addEventListener('click', () => {
   }
 
   url.searchParams.set('flex', flexCheckbox.checked.toString())
-  url.searchParams.set('aggregatableBucket', flexCheckbox.checked.toString())
+  url.searchParams.set('aggregatableBucket', aggregatableBucketCheckbox.checked.toString())
 
   void navigator.clipboard.writeText(url.toString())
 })
