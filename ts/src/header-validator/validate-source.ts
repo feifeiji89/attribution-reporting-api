@@ -752,10 +752,12 @@ function source(j: Json, ctx: Context): Maybe<Source> {
           'attribution_scopes',
           withDefault(attributionScopes, null)
         ),
-        aggregatableBucketBudget: field(
-          'aggregatable_bucket_max_budget',
-          withDefault(aggregatableBucketBudget, new Map())
-        ),
+        aggregatableBucketBudget: ctx.opts.aggregatableBucket
+          ? field(
+              'aggregatable_bucket_max_budget',
+              withDefault(aggregatableBucketBudget, new Map())
+            )
+          : () => Maybe.some(new Map()),
 
         ...commonDebugFields,
         ...priorityField,

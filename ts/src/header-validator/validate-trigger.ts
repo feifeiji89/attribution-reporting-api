@@ -395,10 +395,9 @@ function trigger(j: Json, ctx: Context): Maybe<Trigger> {
           'aggregatable_deduplication_keys',
           withDefault(aggregatableDedupKeys, [])
         ),
-        aggregatableBuckets: field(
-          'aggregatable_buckets',
-          withDefault(aggregatableBuckets, [])
-        ),
+        aggregatableBuckets: ctx.opts.aggregatableBucket
+          ? field('aggregatable_buckets', withDefault(aggregatableBuckets, []))
+          : () => Maybe.some([]),
         aggregatableSourceRegistrationTime: () => aggregatableSourceRegTimeVal,
         eventTriggerData: field(
           'event_trigger_data',

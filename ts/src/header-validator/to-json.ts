@@ -206,6 +206,7 @@ type Source = CommonDebug &
 
 export interface Options {
   fullFlex?: boolean | undefined
+  aggregatableBucket?: boolean | undefined
 }
 
 export function serializeSource(
@@ -247,9 +248,9 @@ export function serializeSource(
     ...ifNotNull('attribution_scopes', s.attributionScopes, (v) =>
       serializeAttributionScopes(v)
     ),
-    aggregatable_bucket_max_budget: Object.fromEntries(
-      s.aggregatableBucketBudget
-    ),
+    aggregatable_bucket_max_budget: opts.aggregatableBucket
+      ? Object.fromEntries(s.aggregatableBucketBudget)
+      : {},
   }
 
   return stringify(source)
@@ -411,10 +412,9 @@ export function serializeTrigger(
       serializeAggregatableDedupKey
     ),
 
-    aggregatable_buckets: Array.from(
-      t.aggregatableBuckets,
-      serializeAggregatableBucket
-    ),
+    aggregatable_buckets: opts.aggregatableBucket
+      ? Array.from(t.aggregatableBuckets, serializeAggregatableBucket)
+      : [],
 
     aggregatable_source_registration_time: t.aggregatableSourceRegistrationTime,
 

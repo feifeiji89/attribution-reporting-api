@@ -51,11 +51,12 @@ const testCases: TestCase[] = [
         "max_event_states": 4
       },
       "aggregatable_bucket_max_budget": {
-        "firebase": 32768,
-        "third_party": 32768
+        "1": 32768,
+        "2": 32768
       }
     }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expected: Maybe.some({
       aggregatableReportWindow: 3601,
       aggregationKeys: new Map([['a', 15n]]),
@@ -100,8 +101,8 @@ const testCases: TestCase[] = [
         maxEventStates: 4,
       },
       aggregatableBucketBudget: new Map([
-        ['firebase', 32768],
-        ['third_party', 32768],
+        ['1', 32768],
+        ['2', 32768],
       ]),
     }),
   },
@@ -3082,6 +3083,7 @@ const testCases: TestCase[] = [
         "aggregatable_bucket_max_budget": ["1"]
     }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'must be an object',
@@ -3098,6 +3100,7 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'bucket exceeds max length per aggregatable bucket (51 > 50)',
@@ -3117,6 +3120,7 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
   },
   {
     name: 'aggregatable-buckets-too-many',
@@ -3147,6 +3151,7 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'exceeds the maximum number of keys (20)',
@@ -3165,6 +3170,7 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'must be in the range [1, 65536]',
@@ -3185,6 +3191,7 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'must be in the range [1, 65536]',
@@ -3201,6 +3208,7 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'must be a number',
@@ -3218,6 +3226,7 @@ testCases.forEach((tc) =>
       sourceType: tc.sourceType ?? SourceType.navigation,
       fullFlex: tc.parseFullFlex,
       noteInfoGain: tc.noteInfoGain,
+      aggregatableBucket: tc.parseAggregatableBucket,
     })
   )
 )

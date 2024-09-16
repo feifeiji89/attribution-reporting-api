@@ -54,6 +54,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       },
       "attribution_scopes": ["1"]
     }`,
+    parseAggregatableBucket: true,
     expected: Maybe.some({
       aggregatableDedupKeys: [
         {
@@ -1720,6 +1721,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
   {
     name: 'aggregatable-buckets-wrong-type',
     input: `{"aggregatable_buckets": 1}`,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         path: ['aggregatable_buckets'],
@@ -1730,6 +1732,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
   {
     name: 'aggregatable-buckets-value-wrong-type',
     input: `{"aggregatable_buckets": [1]}`,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         path: ['aggregatable_buckets', 0],
@@ -1742,6 +1745,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
     input: `{"aggregatable_buckets": [{
       "bucket": 1
     }]}`,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         path: ['aggregatable_buckets', 0, 'bucket'],
@@ -1755,6 +1759,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       "filters": [],
       "not_filters": []
     }]}`,
+    parseAggregatableBucket: true,
     expectedErrors: [
       {
         path: ['aggregatable_buckets', 0, 'bucket'],
@@ -1769,6 +1774,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       "filters": [],
       "not_filters": []
     }]}`,
+    parseAggregatableBucket: true,
   },
 ]
 
@@ -1778,6 +1784,7 @@ testCases.forEach((tc) =>
     trigger.validator({
       vsv: { ...vsv.Chromium, ...tc.vsv },
       fullFlex: tc.parseFullFlex,
+      aggregatableBucket: tc.parseAggregatableBucket,
     })
   )
 )
