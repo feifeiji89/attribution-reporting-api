@@ -1014,7 +1014,7 @@ An attribution trigger is a [=struct=] with the following items:
 : <dfn>attribution scopes</dfn>
 :: A [=set=] of [=strings=].
 : <dfn>aggregatable buckets</dfn>
-:: A [=list=] of [=aggregatable bucket=].
+:: A [=list=] of [=aggregatable buckets=].
 
 </dl>
 
