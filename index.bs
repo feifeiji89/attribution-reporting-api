@@ -927,7 +927,7 @@ An aggregatable bucket is a [=struct=] with the following items:
 
 <dl dfn-for="aggregatable bucket">
 : <dfn>bucket</dfn>
-:: A string.
+:: A [=string=].
 : <dfn>filters</dfn>
 :: A [=list=] of [=filter configs=].
 : <dfn>negated filters</dfn>
@@ -1429,7 +1429,7 @@ maximum [=set/size=] of an [=attribution source=]'s [=attribution scopes/values=
 Its value is 20.
 
 <dfn>Max length per aggregatable bucket</dfn> is a positive integer that controls
-the maximum [=string/length=] of an [=aggregatable bucket=]'s [=aggregatable bucket/bucket=]'.
+the maximum [=string/length=] of an [=aggregatable bucket=]'s [=aggregatable bucket/bucket=].
 Its value is 50.
 
 <dfn>Max aggregatable buckets per source registration</dfn> is a positive integer that
@@ -2509,7 +2509,7 @@ To <dfn>parse aggregatable bucket budget</dfn> given a [=map=] |map|:
 1. Let |aggregatableBucketBudget| be a new [=map=].
 1. If |map|["<code>[=source-registration JSON key/aggregatable_bucket_max_budget=]</code>"] does not [=map/exists|exist=], return |aggregatableBucketBudget|.
 1. Let |values| be |map|["<code>[=source-registration JSON key/aggregatable_bucket_max_budget=]</code>"].
-1. If |values| is not an [=map=], return an error.
+1. If |values| is not a [=map=], return an error.
 1. If |values|'s [=map/size=] is greater than the
     [=max aggregatable buckets per source registration=], return an error.
 1. [=map/iterate|For each=] |key| → |value| of |values|:
@@ -3436,8 +3436,8 @@ should be fully determined regardless of the result of checks on implicitly repo
 A <dfn>trigger-registration JSON key</dfn> is one of the following:
 
 <ul dfn-for="trigger-registration JSON key">
-<li>"<dfn><code>aggregatable_debug_reporting</code></dfn>"
 <li>"<dfn><code>aggregatable_buckets</code></dfn>"
+<li>"<dfn><code>aggregatable_debug_reporting</code></dfn>"
 <li>"<dfn><code>aggregatable_deduplication_keys</code></dfn>"
 <li>"<dfn><code>aggregatable_filtering_id_max_bytes</code></dfn>"
 <li>"<dfn><code>aggregatable_source_registration_time</code></dfn>"
@@ -3666,13 +3666,13 @@ To <dfn>parse aggregatable buckets</dfn> given a [=map=] |map|:
 1. [=list/iterate|For each=] |value| of |values|:
     1. If |value| is not a [=map=], return an error.
     1. Let |bucket| be |value|["<code>[=trigger-registration JSON key/bucket=]</code>"].
-    1. If |bucket| is not a string, return an error.
+    1. If |bucket| is not a [=string=], return an error.
     1. Let |filterPair| be the result of running [=parse a filter pair=] with
         |value|.
     1. If |filterPair| is an error, return it.
     1. Let |aggregatableBucket| be a new [=aggregatable bucket=] with the items:
         : [=aggregatable bucket/bucket=]
-        :: |dedupKey|
+        :: |bucket|
         : [=aggregatable bucket/filters=]
         :: |filterPair|[0]
         : [=aggregatable bucket/negated filters=]
@@ -3960,7 +3960,7 @@ To <dfn>find matching aggregatable bucket</dfn> given an [=attribution trigger=]
         with |sourceToAttribute|, |aggregatableBucket|'s [=aggregatable bucket/filters=],
         |aggregatableBucket|'s [=aggregatable bucket/negated filters=], and
         |trigger|'s [=attribution trigger/trigger time=] is true:
-        1. return |aggregatableBucket|'s [=aggregatable bucket/bucket=].
+        1. Return |aggregatableBucket|'s [=aggregatable bucket/bucket=].
 1. Return null.
 
 To <dfn>get remaining aggregatable budget for matched bucket</dfn> given an [=attribution trigger=] |trigger| and an [=attribution source=] |sourceToAttribute|:
@@ -3971,7 +3971,7 @@ To <dfn>get remaining aggregatable budget for matched bucket</dfn> given an [=at
 1. Return |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|].
 
 To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn> given an
-[=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|
+[=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
 and an [=attribution trigger=] |trigger|, run the following steps:
 
 1. Let |remainingBudget| be the result of running [=get remaining aggregatable budget for matched bucket=] with |trigger| and |sourceToAttribute|.
