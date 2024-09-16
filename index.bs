@@ -834,6 +834,9 @@ An attribution source is a [=struct=] with the following items:
     non-negative 128-bit integers.
 : <dfn>remaining aggregatable attribution budget</dfn>
 :: A non-negative integer.
+: <dfn>aggregatable attribution bucket budget</dfn>
+:: A [=map=] whose [=map/key|keys=] are [=strings=] and whose [=map/value|values=] are
+       positive integers.
 : <dfn>remaining aggregatable attribution bucket budget</dfn>
 :: A [=map=] whose [=map/key|keys=] are [=strings=] and whose [=map/value|values=] are
        positive integers.
@@ -2888,6 +2891,8 @@ To <dfn noexport>parse source-registration JSON</dfn> given a [=byte sequence=]
     :: |aggregationKeys|
     : [=attribution source/remaining aggregatable attribution budget=]
     :: |aggregatableAttributionBudget|
+    : [=attribution source/aggregatable attribution bucket budget=]
+    :: |aggregatableAttributionBucketBudget|
     : [=attribution source/remaining aggregatable attribution bucket budget=]
     :: |aggregatableAttributionBucketBudget|
     : [=attribution source/debug reporting enabled=]
@@ -3963,8 +3968,9 @@ To <dfn>find matching aggregatable bucket</dfn> given an [=attribution trigger=]
         1. Return |aggregatableBucket|'s [=aggregatable bucket/bucket=].
 1. Return null.
 
-To <dfn>get remaining aggregatable budget for matched bucket</dfn> given an [=attribution trigger=] |trigger| and an [=attribution source=] |sourceToAttribute|:
-1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
+To <dfn>get remaining aggregatable budget for matched bucket</dfn> given an [=attribution source=] |sourceToAttribute|,
+an [=attribution trigger=] |trigger| and a [=string=] |matchedBucket|:
+
 1. [=Assert=]: |matchedBucket| is not null.
 1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] does not [=map/exists|exist=]:
     1. Return [=allowed aggregatable budget per source=].
@@ -3972,9 +3978,9 @@ To <dfn>get remaining aggregatable budget for matched bucket</dfn> given an [=at
 
 To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn> given an
 [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
-and an [=attribution trigger=] |trigger|, run the following steps:
+an [=attribution trigger=] |trigger| and a [=string=] |matchedBucket|, run the following steps:
 
-1. Let |remainingBudget| be the result of running [=get remaining aggregatable budget for matched bucket=] with |trigger| and |sourceToAttribute|.
+1. Let |remainingBudget| be the result of running [=get remaining aggregatable budget for matched bucket=] with |sourceToAttribute|, |trigger| and |matchedBucket|.
 1. If |report|'s [=aggregatable attribution report/required aggregatable budget=] is greater than
     |remainingBudget|, return false.
 1. Return true.
@@ -4006,8 +4012,12 @@ a possibly null [=attribution source=] |sourceToAttribute|, and a possibly null
     :: [=map/Set=] |body|["`limit`"] to [=allowed aggregatable budget per source=],
          [=serialize an integer|serialized=].
     : "<code>[=trigger debug data type/trigger-aggregate-insufficient-bucket-budget=]</code>"
-    :: [=map/Set=] |body|["`limit`"] to the result of running [=get remaining aggregatable budget for matched bucket=]
-         with |trigger| and |sourceToAttribute|, [=serialize an integer|serialized=].
+    ::
+        1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
+        1. [=Assert=]: |matchedBucket| is not null and [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|] [=map/exists=].
+        1. [=map/Set=] |body|["`bucket`"] to |matchedBucket|.
+        1. [=map/Set=] |body|["`limit`"] to [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|],
+            [=serialize an integer|serialized=].
     : "<code>[=trigger debug data type/trigger-aggregate-excessive-reports=]</code>"
     :: [=map/Set=] |body|["`limit`"] to [=max aggregatable reports per source=][0],
     : "<code>[=trigger debug data type/trigger-event-low-priority=]</code>"
@@ -4238,7 +4248,6 @@ To <dfn>trigger aggregatable attribution</dfn> given an [=attribution trigger=] 
         |trigger|'s [=attribution trigger/trigger time=] is true:
         1. Set |matchedDedupKey| to |aggregatableDedupKey|'s [=aggregatable dedup key/dedup key=].
         1. [=iteration/Break=].
-1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
 1. If |matchedDedupKey| is not null and |sourceToAttribute|'s [=attribution source/aggregatable dedup keys=]
     [=list/contains=] it:
      1. Return the [=triggering result=] ("<code>[=triggering status/dropped=]</code>",
@@ -4279,8 +4288,9 @@ To <dfn>trigger aggregatable attribution</dfn> given an [=attribution trigger=] 
     with |report| and |sourceToAttribute| is false:
     1. Return the [=triggering result=] ("<code>[=triggering status/dropped=]</code>",
         ("<code>[=trigger debug data type/trigger-aggregate-insufficient-budget=]</code>", null)).
+1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
 1. If |matchedBucket| is not null and the result of running [=check if an attribution source can create aggregatable contributions for matched bucket=]
-    with |report| and |sourceToAttribute| is false:
+    with |report|, |sourceToAttribute|, |trigger| and |matchedBucket| is false:
     1. Return the [=triggering result=] ("<code>[=triggering status/dropped=]</code>",
         ("<code>[=trigger debug data type/trigger-aggregate-insufficient-bucket-budget=]</code>", null)).
 1. [=set/Append=] |report| to the [=aggregatable attribution report cache=].
