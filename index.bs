@@ -3978,9 +3978,9 @@ an [=attribution trigger=] |trigger| and a [=string=] |matchedBucket|:
 
 To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn> given an
 [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
-an [=attribution trigger=] |trigger| and a [=string=] |matchedBucket|, run the following steps:
+an [=attribution trigger=] |trigger|, and a [=string=] |matchedBucket|, run the following steps:
 
-1. Let |remainingBudget| be the result of running [=get remaining aggregatable budget for matched bucket=] with |sourceToAttribute|, |trigger| and |matchedBucket|.
+1. Let |remainingBudget| be the result of running [=get remaining aggregatable budget for matched bucket=] with |sourceToAttribute|, |trigger|, and |matchedBucket|.
 1. If |report|'s [=aggregatable attribution report/required aggregatable budget=] is greater than
     |remainingBudget|, return false.
 1. Return true.
@@ -4014,9 +4014,9 @@ a possibly null [=attribution source=] |sourceToAttribute|, and a possibly null
     : "<code>[=trigger debug data type/trigger-aggregate-insufficient-bucket-budget=]</code>"
     ::
         1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
-        1. [=Assert=]: |matchedBucket| is not null and [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|] [=map/exists=].
+        1. [=Assert=]: |matchedBucket| is not null and |sourceToAttribute|'s [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|] [=map/exists=].
         1. [=map/Set=] |body|["`bucket`"] to |matchedBucket|.
-        1. [=map/Set=] |body|["`limit`"] to [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|],
+        1. [=map/Set=] |body|["`limit`"] to |sourceToAttribute|'s [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|],
             [=serialize an integer|serialized=].
     : "<code>[=trigger debug data type/trigger-aggregate-excessive-reports=]</code>"
     :: [=map/Set=] |body|["`limit`"] to [=max aggregatable reports per source=][0],
@@ -4290,7 +4290,7 @@ To <dfn>trigger aggregatable attribution</dfn> given an [=attribution trigger=] 
         ("<code>[=trigger debug data type/trigger-aggregate-insufficient-budget=]</code>", null)).
 1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
 1. If |matchedBucket| is not null and the result of running [=check if an attribution source can create aggregatable contributions for matched bucket=]
-    with |report|, |sourceToAttribute|, |trigger| and |matchedBucket| is false:
+    with |report|, |sourceToAttribute|, |trigger|, and |matchedBucket| is false:
     1. Return the [=triggering result=] ("<code>[=triggering status/dropped=]</code>",
         ("<code>[=trigger debug data type/trigger-aggregate-insufficient-bucket-budget=]</code>", null)).
 1. [=set/Append=] |report| to the [=aggregatable attribution report cache=].
