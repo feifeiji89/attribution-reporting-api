@@ -1431,13 +1431,15 @@ Its value is 50.
 maximum [=set/size=] of an [=attribution source=]'s [=attribution scopes/values=].
 Its value is 20.
 
-<dfn>Max length per aggregatable bucket</dfn> is a positive integer that controls
-the maximum [=string/length=] of an [=aggregatable bucket=]'s [=aggregatable bucket/bucket=].
+<dfn>Max length per aggregatable bucket for source</dfn> is a positive integer that controls
+the maximum [=string/length=] of an [=attribution source=]'s
+[=attribution source/aggregatable attribution bucket budget=]'s keys.
 Its value is 50.
 
 <dfn>Max aggregatable buckets per source registration</dfn> is a positive integer that
 controls the maximum [=map/size=] of an [=attribution source=]'s
-[=attribution source/remaining aggregatable attribution bucket budget=].
+[=attribution source/remaining aggregatable attribution bucket budget=]
+and [=attribution source/aggregatable attribution bucket budget=].
 Its value is 20.
 
 # Vendor-Specific Values # {#vendor-specific-values}
@@ -2516,7 +2518,7 @@ To <dfn>parse aggregatable bucket budget</dfn> given a [=map=] |map|:
 1. If |values|'s [=map/size=] is greater than the
     [=max aggregatable buckets per source registration=], return an error.
 1. [=map/iterate|For each=] |key| → |value| of |values|:
-    1. If |key|'s [=string/length=] is greater than the [=max length per aggregatable bucket=],
+    1. If |key|'s [=string/length=] is greater than the [=max length per aggregatable bucket for source=],
         return an error.
     1. If |value| is not an integer or is less than or equal to 0 or is greater than
         [=allowed aggregatable budget per source=], return an error.
@@ -3670,6 +3672,7 @@ To <dfn>parse aggregatable buckets</dfn> given a [=map=] |map|:
 1. If |values| is not a [=list=], return an error.
 1. [=list/iterate|For each=] |value| of |values|:
     1. If |value| is not a [=map=], return an error.
+    1. If |map|["<code>[=trigger-registration JSON key/bucket=]</code>"] does not [=map/exist=], return an error.
     1. Let |bucket| be |value|["<code>[=trigger-registration JSON key/bucket=]</code>"].
     1. If |bucket| is not a [=string=], return an error.
     1. Let |filterPair| be the result of running [=parse a filter pair=] with
@@ -3968,19 +3971,13 @@ To <dfn>find matching aggregatable bucket</dfn> given an [=attribution trigger=]
         1. Return |aggregatableBucket|'s [=aggregatable bucket/bucket=].
 1. Return null.
 
-To <dfn>get remaining aggregatable budget for matched bucket</dfn> given an [=attribution source=] |sourceToAttribute|,
-an [=attribution trigger=] |trigger| and a [=string=] |matchedBucket|:
-
-1. [=Assert=]: |matchedBucket| is not null.
-1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] does not [=map/exists|exist=]:
-    1. Return [=allowed aggregatable budget per source=].
-1. Return |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|].
-
 To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn> given an
 [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
 an [=attribution trigger=] |trigger|, and a [=string=] |matchedBucket|, run the following steps:
 
-1. Let |remainingBudget| be the result of running [=get remaining aggregatable budget for matched bucket=] with |sourceToAttribute|, |trigger|, and |matchedBucket|.
+1. Let |remainingBudget| be [=allowed aggregatable budget per source=].
+1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] [=map/exists=]:
+    1. Set |remainingBudget| to |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|].
 1. If |report|'s [=aggregatable attribution report/required aggregatable budget=] is greater than
     |remainingBudget|, return false.
 1. Return true.
@@ -4013,6 +4010,7 @@ a possibly null [=attribution source=] |sourceToAttribute|, and a possibly null
          [=serialize an integer|serialized=].
     : "<code>[=trigger debug data type/trigger-aggregate-insufficient-bucket-budget=]</code>"
     ::
+        1. [=Assert=]: |sourceToAttribute| is not null.
         1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
         1. [=Assert=]: |matchedBucket| is not null and |sourceToAttribute|'s [=attribution source/aggregatable attribution bucket budget=][|matchedBucket|] [=map/exists=].
         1. [=map/Set=] |body|["`bucket`"] to |matchedBucket|.
