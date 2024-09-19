@@ -1433,7 +1433,8 @@ Its value is 20.
 
 <dfn>Max length per aggregatable bucket for source</dfn> is a positive integer that controls
 the maximum [=string/length=] of an [=attribution source=]'s
-[=attribution source/aggregatable attribution bucket budget=]'s keys.
+[=attribution source/aggregatable attribution bucket budget=]'s and
+[=attribution source/remaining aggregatable attribution bucket budget=]'s keys.
 Its value is 50.
 
 <dfn>Max aggregatable buckets per source registration</dfn> is a positive integer that
@@ -3975,11 +3976,9 @@ To <dfn>check if an [=attribution source=] can create [=aggregatable contributio
 [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
 an [=attribution trigger=] |trigger|, and a [=string=] |matchedBucket|, run the following steps:
 
-1. Let |remainingBudget| be [=allowed aggregatable budget per source=].
-1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] [=map/exists=]:
-    1. Set |remainingBudget| to |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|].
+1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] does not [=map/exists|exist=], return true.
 1. If |report|'s [=aggregatable attribution report/required aggregatable budget=] is greater than
-    |remainingBudget|, return false.
+    |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|], return false.
 1. Return true.
 
 <h3 id="obtaining-trigger-verbose-debug-data">Obtaining verbose debug data on trigger registration</h3>
