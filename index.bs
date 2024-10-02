@@ -1435,13 +1435,13 @@ Its value is 20.
 the maximum [=string/length=] of an [=attribution source=]'s
 [=attribution source/aggregatable attribution bucket budget=]'s and
 [=attribution source/remaining aggregatable attribution bucket budget=]'s keys.
-Its value is 50.
+Its value is 25.
 
 <dfn>Max aggregatable buckets per source registration</dfn> is a positive integer that
 controls the maximum [=map/size=] of an [=attribution source=]'s
 [=attribution source/remaining aggregatable attribution bucket budget=]
 and [=attribution source/aggregatable attribution bucket budget=].
-Its value is 20.
+Its value is 25.
 
 # Vendor-Specific Values # {#vendor-specific-values}
 
