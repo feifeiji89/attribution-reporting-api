@@ -1760,12 +1760,6 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       "not_filters": []
     }]}`,
     parseAggregatableBucket: true,
-    expectedErrors: [
-      {
-        path: ['aggregatable_buckets', 0, 'bucket'],
-        msg: 'required',
-      },
-    ],
   },
   {
     name: 'aggregatable_bucket-empty-filter',

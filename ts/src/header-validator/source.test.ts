@@ -3096,18 +3096,15 @@ const testCases: TestCase[] = [
     input: `{
         "destination": "https://a.test",
         "aggregatable_bucket_max_budget": {
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": 32768
+          "aaaaaaaaaaaaaaaaaaaaaaaaaa": 32768
         }
       }`,
     sourceType: SourceType.navigation,
     parseAggregatableBucket: true,
     expectedErrors: [
       {
-        msg: 'bucket exceeds max length per aggregatable bucket (51 > 50)',
-        path: [
-          'aggregatable_bucket_max_budget',
-          'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        ],
+        msg: 'bucket exceeds max length per aggregatable bucket (26 > 25)',
+        path: ['aggregatable_bucket_max_budget', 'aaaaaaaaaaaaaaaaaaaaaaaaaa'],
       },
     ],
   },
@@ -3147,14 +3144,19 @@ const testCases: TestCase[] = [
           "18": 32768,
           "19": 32768,
           "20": 32768,
-          "21": 32768
+          "21": 32768,
+          "22": 32768,
+          "23": 32768,
+          "24": 32768,
+          "25": 32768,
+          "26": 32768
         }
       }`,
     sourceType: SourceType.navigation,
     parseAggregatableBucket: true,
     expectedErrors: [
       {
-        msg: 'exceeds the maximum number of keys (20)',
+        msg: 'exceeds the maximum number of keys (25)',
         path: ['aggregatable_bucket_max_budget'],
       },
     ],

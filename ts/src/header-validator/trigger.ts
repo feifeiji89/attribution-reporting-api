@@ -40,7 +40,7 @@ export type EventTriggerDatum = FilterPair &
 export type AggregatableDedupKey = FilterPair & DedupKey
 
 export type Bucket = {
-  bucket: string
+  bucket: string | null
 }
 
 export type AggregatableBucket = FilterPair & Bucket

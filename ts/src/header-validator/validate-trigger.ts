@@ -109,7 +109,7 @@ const dedupKeyField: StructFields<DedupKey, Context> = {
 }
 
 const bucketField: StructFields<Bucket> = {
-  bucket: field('bucket', required(string)),
+  bucket: field('bucket', withDefault(string, null)),
 }
 
 function sourceKeys(j: Json, ctx: Context): Maybe<Set<string>> {

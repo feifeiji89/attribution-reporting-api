@@ -930,7 +930,7 @@ An aggregatable bucket is a [=struct=] with the following items:
 
 <dl dfn-for="aggregatable bucket">
 : <dfn>bucket</dfn>
-:: A [=string=].
+:: Null or a [=string=].
 : <dfn>filters</dfn>
 :: A [=list=] of [=filter configs=].
 : <dfn>negated filters</dfn>
@@ -1432,9 +1432,9 @@ maximum [=set/size=] of an [=attribution source=]'s [=attribution scopes/values=
 Its value is 20.
 
 <dfn>Max length per aggregatable bucket for source</dfn> is a positive integer that controls
-the maximum [=string/length=] of an [=attribution source=]'s
-[=attribution source/aggregatable attribution bucket budget=]'s and
-[=attribution source/remaining aggregatable attribution bucket budget=]'s keys.
+the maximum [=string/length=] of keys of an [=attribution source=]'s
+[=attribution source/aggregatable attribution bucket budget=] and
+[=attribution source/remaining aggregatable attribution bucket budget=].
 Its value is 25.
 
 <dfn>Max aggregatable buckets per source registration</dfn> is a positive integer that
@@ -3673,9 +3673,10 @@ To <dfn>parse aggregatable buckets</dfn> given a [=map=] |map|:
 1. If |values| is not a [=list=], return an error.
 1. [=list/iterate|For each=] |value| of |values|:
     1. If |value| is not a [=map=], return an error.
-    1. If |map|["<code>[=trigger-registration JSON key/bucket=]</code>"] does not [=map/exist=], return an error.
-    1. Let |bucket| be |value|["<code>[=trigger-registration JSON key/bucket=]</code>"].
-    1. If |bucket| is not a [=string=], return an error.
+    1. Let |bucket| be null.
+    1. If |map|["<code>[=trigger-registration JSON key/bucket=]</code>"] [=map/exists=]:
+        1. Set |bucket| to |value|["<code>[=trigger-registration JSON key/bucket=]</code>"].
+        1. If |bucket| is not a [=string=], return an error.
     1. Let |filterPair| be the result of running [=parse a filter pair=] with
         |value|.
     1. If |filterPair| is an error, return it.

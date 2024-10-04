@@ -322,7 +322,7 @@ function serializeEventTriggerDatum(
 
 type AggregatableDedupKey = FilterPair & DedupKey
 type AggregatableBucket = FilterPair & {
-  bucket: string
+  bucket?: string
 }
 
 function serializeAggregatableDedupKey(
@@ -339,7 +339,7 @@ function serializeAggregatableBucket(
 ): AggregatableBucket {
   return {
     ...serializeFilterPair(b),
-    bucket: b.bucket,
+    ...ifNotNull('bucket', b.bucket, (v) => v.toString()),
   }
 }
 
