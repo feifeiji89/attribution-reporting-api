@@ -261,7 +261,7 @@ Additional fields: `limit`
 Aggregatable attribution for the trigger failed because the attributed source
 had [insufficient budget for bucket][].
 
-Additional fields: `limit`
+Additional fields: `limit`, `bucket`
 
 #### `trigger-aggregate-storage-limit`
 
