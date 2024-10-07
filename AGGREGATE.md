@@ -91,7 +91,12 @@ Registering sources eligible for aggregate reporting entails adding a new
     "geoValue": "0x5" // Source-side geo region = 5 (US), out of a possible ~100 regions
   },
 
-  "aggregatable_report_window": "86400"
+  "aggregatable_report_window": "86400",
+
+  "aggregatable_bucket_max_budget": {
+    "bucket1": 32768,  // Max contribution budget for bucket1.
+    "bucket2": 32768   // Max contribution budget for bucket2.
+  }
 }
 ```
 This defines a dictionary of named aggregation keys, each with a piece of the
@@ -104,6 +109,10 @@ strings in the JSON must be limited to at most 32 digits.
 
 There is also a new optional field, `aggregatable_report_window`, which is the duration 
 in seconds after source registration during which aggregatable reports may be created 
+for this source.
+
+There is also a new optional field, `aggregatable_bucket_max_budget`, which is
+the dictionary used to set the maximum contribution for each aggregatable bucket 
 for this source.
 
 ### Attribution trigger registration
@@ -230,6 +239,21 @@ triggers containing the same `deduplication_key` for a single source with select
 The browser will create aggregatable reports for a source only if the trigger's
 `aggregatable_deduplication_key` has not already been associated with an
 aggregatable report for that source.
+
+Trigger registration will accept an optional field `aggregatable_buckets` which
+will be used to select the contribution bucket for the generated aggregate report.
+
+```jsonc
+{
+  ...
+  "aggregatable_buckets": [
+    {
+      "bucket": "[string for the aggregatable bucket]",
+      "filters": {"source_type": ["navigation"]}
+    }
+  ]
+}
+```
 
 Note that aggregatable trigger registration is independent of event-level
 trigger registration.
@@ -415,8 +439,12 @@ This bound is characterized by a single parameters: `L1`, the maximum sum of the
 contributions (values) across all buckets for a given source event. L1 refers to
 the L1 sensitivity / norm of the histogram contributions per source event.
 
-Exceeding these limits will cause future contributions to silently drop.  
-While exposing failure in any kind of error interface can be used to leak
+The adtech can also customize the contribution limit for each bucket during
+source registration and specify which bucket to allocate the contributions to
+in the trigger. The bucket-level limits must be less than or equal to `L1`.
+
+Exceeding these limits (including bucket-level limits) will cause future contributions
+to silently drop. While exposing failure in any kind of error interface can be used to leak
 sensitive information, we might be able to reveal aggregate failure results via
 some other monitoring side channel in the future.
 
