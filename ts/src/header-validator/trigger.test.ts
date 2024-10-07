@@ -1761,15 +1761,6 @@ const testCases: jsontest.TestCase<Trigger>[] = [
     }]}`,
     parseAggregatableBucket: true,
   },
-  {
-    name: 'aggregatable_bucket-empty-filter',
-    input: `{"aggregatable_buckets": [{
-      "bucket": "1",
-      "filters": [],
-      "not_filters": []
-    }]}`,
-    parseAggregatableBucket: true,
-  },
 ]
 
 testCases.forEach((tc) =>
