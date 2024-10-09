@@ -91,12 +91,7 @@ Registering sources eligible for aggregate reporting entails adding a new
     "geoValue": "0x5" // Source-side geo region = 5 (US), out of a possible ~100 regions
   },
 
-  "aggregatable_report_window": "86400",
-
-  "aggregatable_bucket_max_budget": {
-    "bucket1": 32768,  // Max contribution budget for bucket1.
-    "bucket2": 32768   // Max contribution budget for bucket2.
-  }
+  "aggregatable_report_window": "86400"
 }
 ```
 This defines a dictionary of named aggregation keys, each with a piece of the
@@ -239,21 +234,6 @@ triggers containing the same `deduplication_key` for a single source with select
 The browser will create aggregatable reports for a source only if the trigger's
 `aggregatable_deduplication_key` has not already been associated with an
 aggregatable report for that source.
-
-Trigger registration will accept an optional field `aggregatable_buckets` which
-will be used to select the contribution bucket for the generated aggregate report.
-
-```jsonc
-{
-  ...
-  "aggregatable_buckets": [
-    {
-      "bucket": "[string for the aggregatable bucket]",
-      "filters": {"source_type": ["navigation"]}
-    }
-  ]
-}
-```
 
 Note that aggregatable trigger registration is independent of event-level
 trigger registration.
@@ -439,14 +419,17 @@ This bound is characterized by a single parameters: `L1`, the maximum sum of the
 contributions (values) across all buckets for a given source event. L1 refers to
 the L1 sensitivity / norm of the histogram contributions per source event.
 
-The adtech can also customize the contribution limit for each bucket during
-source registration and specify which bucket to allocate the contributions to
-in the trigger. The bucket-level limits must be less than or equal to `L1`.
+The adtech can also customize the contribution limit
+for each [aggregatable bucket](#optional--aggregatable-buckets) during source
+registration and specify which aggregatable bucket to allocate the contributions
+to in the trigger. The aggregatable-bucket-level limits must be less than or
+equal to `L1`.
 
-Exceeding these limits (including bucket-level limits) will cause future contributions
-to silently drop. While exposing failure in any kind of error interface can be used to leak
-sensitive information, we might be able to reveal aggregate failure results via
-some other monitoring side channel in the future.
+Exceeding these limits (including aggregatable-bucket-level limits) will cause
+future contributions to silently drop. While exposing failure in any kind of
+error interface can be used to leak sensitive information, we might be able to 
+reveal aggregate failure results via some other monitoring side channel in the
+future.
 
 For the initial proposal, set `L1 = 65536`. Note that for privacy, this
 parameter can be arbitrary, as noise in the aggregation service will be scaled
@@ -578,6 +561,48 @@ the aggregatable report with a non-default max bytes. This behavior is the same
 as when a trigger context ID is set.
 
 See [flexible_filtering.md](https://github.com/patcg-individual-drafts/private-aggregation-api/blob/main/flexible_filtering.md) for more details.
+
+### Optional: aggregatable buckets
+
+Source registration will accept an optional field
+`aggregatable_bucket_max_budget`, which is the dictionary used to set the
+maximum contribution for each aggregatable bucket for this source.
+
+```jsonc
+{
+  ...
+  "aggregatable_bucket_max_budget": {
+    "bucket1": 32768,  // Max contribution budget for bucket1.
+    "bucket2": 32768   // Max contribution budget for bucket2.
+  }
+}
+```
+
+Trigger registration will accept an optional field `aggregatable_buckets` which
+will be used to select the contribution bucket for the generated aggregate report.
+
+```jsonc
+{
+  ...
+  "aggregatable_buckets": [
+    {
+      "bucket": "example string",
+      "filters": {"source_type": ["navigation"]}
+    }
+  ]
+}
+```
+
+The first aggregatable bucket from the trigger that matches the source filters
+will be selected. If there is no bucket specified or no matching filters, the
+`L1` contribution budget and [Aggregate Debug Reporting](aggregate_debug_reporting.md#contribution-bounding-and-budgeting)
+privacy budget will still be applied.
+
+When generating a pending aggregate report, in addition to performing the 
+current `L1` budget limit check, the required contributions for the report will
+be checked against the available budget in the selected bucket, if applicable.
+If the budget is insufficient, a debug report will be created, indicating that 
+the report was dropped due to the budget shortfall in the selected bucket.
 
 ## Data processing through a Secure Aggregation Service
 
