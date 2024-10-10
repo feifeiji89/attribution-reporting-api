@@ -564,8 +564,8 @@ across different aggregatable buckets, addressing common challenges such as:
 - Distributing the budget across multiple SDKs to prevent any single SDK
   from consuming all available privacy budget.
 
-Source registration will accept an optional field
-`aggregatable_bucket_max_budget`, which is the dictionary used to set the
+[Source registration](#attribution-source-registration) will accept an optional
+field `aggregatable_bucket_max_budget`, which is the dictionary used to set the
 maximum contribution for each aggregatable bucket for this source.
 
 ```jsonc
@@ -578,8 +578,9 @@ maximum contribution for each aggregatable bucket for this source.
 }
 ```
 
-Trigger registration will accept an optional field `aggregatable_buckets` which
-will be used to select the contribution bucket for the generated aggregate report.
+[Trigger registration](#attribution-trigger-registration) will accept an
+optional field `aggregatable_buckets` which will be used to select the
+contribution bucket for the generated aggregate report.
 
 ```jsonc
 {
