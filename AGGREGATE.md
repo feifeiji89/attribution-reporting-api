@@ -553,18 +553,16 @@ See [flexible_filtering.md](https://github.com/patcg-individual-drafts/private-a
 
 ### Optional: aggregatable buckets
 
-Currently the adtech doesn't have control over how the total `L1` budget is
-allocated across different types of conversions.
-
-With this optional feature, the adtech can now manage `L1` budget distribution
-across different aggregatable buckets, addressing common challenges such as:
+Aggregatable buckets is an optional feature that gives API callers the ability 
+to manage `L1` contribution budget distribution across different aggregatable
+buckets or types of conversions, addressing common challenges such as:
 
 - Allocating the privacy budget between different types of conversions
   (e.g., biddable vs. non-biddable).
 - Distributing the budget across multiple SDKs to prevent any single SDK
   from consuming all available privacy budget.
 
-[Source registration](#attribution-source-registration) will accept an optional
+[Source registrations](#attribution-source-registration) will accept an optional
 field `aggregatable_bucket_max_budget`, which is the dictionary used to set the
 maximum contribution for each aggregatable bucket for this source.
 
@@ -578,7 +576,7 @@ maximum contribution for each aggregatable bucket for this source.
 }
 ```
 
-[Trigger registration](#attribution-trigger-registration) will accept an
+[Trigger registrations](#attribution-trigger-registration) will accept an
 optional field `aggregatable_buckets` which will be used to select the
 contribution bucket for the generated aggregate report.
 
@@ -598,8 +596,8 @@ The first aggregatable bucket from the trigger that matches the source filters
 will be selected. If there is no bucket specified or no matching filters, the
 `L1` contribution budget will still be applied.
 
-When generating a pending aggregate report, in addition to performing the 
-current `L1` budget limit check, the required contributions for the report will
+When generating an aggregate report, in addition to performing the 
+current `L1` budget limit check, the contributions for the report will
 be checked against the available budget in the selected bucket, if applicable.
 If the budget is insufficient, the aggregate report will be dropped.
 
