@@ -106,10 +106,6 @@ There is also a new optional field, `aggregatable_report_window`, which is the d
 in seconds after source registration during which aggregatable reports may be created 
 for this source.
 
-There is also a new optional field, `aggregatable_bucket_max_budget`, which is
-the dictionary used to set the maximum contribution for each aggregatable bucket 
-for this source.
-
 ### Attribution trigger registration
 
 Trigger registration will also add two new fields to the JSON dictionary of the
@@ -419,17 +415,10 @@ This bound is characterized by a single parameters: `L1`, the maximum sum of the
 contributions (values) across all buckets for a given source event. L1 refers to
 the L1 sensitivity / norm of the histogram contributions per source event.
 
-The adtech can also customize the contribution limit
-for each [aggregatable bucket](#optional--aggregatable-buckets) during source
-registration and specify which aggregatable bucket to allocate the contributions
-to in the trigger. The aggregatable-bucket-level limits must be less than or
-equal to `L1`.
-
-Exceeding these limits (including aggregatable-bucket-level limits) will cause
-future contributions to silently drop. While exposing failure in any kind of
-error interface can be used to leak sensitive information, we might be able to 
-reveal aggregate failure results via some other monitoring side channel in the
-future.
+Exceeding these limits will cause future contributions to silently drop.  
+While exposing failure in any kind of error interface can be used to leak
+sensitive information, we might be able to reveal aggregate failure results via
+some other monitoring side channel in the future.
 
 For the initial proposal, set `L1 = 65536`. Note that for privacy, this
 parameter can be arbitrary, as noise in the aggregation service will be scaled
@@ -564,6 +553,17 @@ See [flexible_filtering.md](https://github.com/patcg-individual-drafts/private-a
 
 ### Optional: aggregatable buckets
 
+Currently the adtech doesn't have control over how the total `L1` budget is
+allocated across different types of conversions.
+
+With this optional feature, the adtech can now manage `L1` budget distribution
+across different aggregatable buckets, addressing common challenges such as:
+
+- Allocating the privacy budget between different types of conversions
+  (e.g., biddable vs. non-biddable).
+- Distributing the budget across multiple SDKs to prevent any single SDK
+  from consuming all available privacy budget.
+
 Source registration will accept an optional field
 `aggregatable_bucket_max_budget`, which is the dictionary used to set the
 maximum contribution for each aggregatable bucket for this source.
@@ -595,14 +595,12 @@ will be used to select the contribution bucket for the generated aggregate repor
 
 The first aggregatable bucket from the trigger that matches the source filters
 will be selected. If there is no bucket specified or no matching filters, the
-`L1` contribution budget and [Aggregate Debug Reporting](aggregate_debug_reporting.md#contribution-bounding-and-budgeting)
-privacy budget will still be applied.
+`L1` contribution budget will still be applied.
 
 When generating a pending aggregate report, in addition to performing the 
 current `L1` budget limit check, the required contributions for the report will
 be checked against the available budget in the selected bucket, if applicable.
-If the budget is insufficient, a debug report will be created, indicating that 
-the report was dropped due to the budget shortfall in the selected bucket.
+If the budget is insufficient, the aggregate report will be dropped.
 
 ## Data processing through a Secure Aggregation Service
 
