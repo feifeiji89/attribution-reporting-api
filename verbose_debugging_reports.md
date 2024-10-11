@@ -295,7 +295,7 @@ The trigger was rejected due to an internal error.
 [event states limit]: https://wicg.github.io/attribution-reporting-api/#attribution-scopes-max-event-states
 [filter data]: https://github.com/WICG/attribution-reporting-api/blob/main/EVENT.md#optional-attribution-filters
 [insufficient budget]: https://github.com/WICG/attribution-reporting-api/blob/main/AGGREGATE.md#contribution-bounding-and-budgeting
-[[insufficient budget for bucket]: https://wicg.github.io/attribution-reporting-api/#attribution-source-aggregatable-attribution-bucket-budget
+[insufficient budget for bucket]: https://wicg.github.io/attribution-reporting-api/#attribution-source-aggregatable-attribution-bucket-budget
 [max aggregatable reports]: https://github.com/WICG/attribution-reporting-api/blob/main/AGGREGATE.md#hide-the-true-number-of-attribution-reports
 [max attributions rate limit]: https://github.com/WICG/attribution-reporting-api/blob/main/EVENT.md#reporting-cooldown--rate-limits
 [noise]: https://github.com/WICG/attribution-reporting-api/blob/main/EVENT.md#data-limits-and-noise

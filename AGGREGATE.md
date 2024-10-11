@@ -555,20 +555,20 @@ See [flexible_filtering.md](https://github.com/patcg-individual-drafts/private-a
 
 Aggregatable buckets is an optional feature that gives API callers the ability 
 to manage `L1` contribution budget distribution across different aggregatable
-buckets or types of conversions, addressing common challenges such as:
+buckets or types of attributions, addressing common challenges such as:
 
-- Allocating the privacy budget between different types of conversions
+- Allocating the privacy budget between different types of attributions
   (e.g., biddable vs. non-biddable).
 - Distributing the budget across multiple SDKs to prevent any single SDK
   from consuming all available privacy budget.
 
 [Source registrations](#attribution-source-registration) will accept an optional
-field `aggregatable_bucket_max_budget`, which is the dictionary used to set the
+field `aggregatable_bucket_max_budget`, which is a dictionary used to set the
 maximum contribution for each aggregatable bucket for this source.
 
 ```jsonc
 {
-  ...
+  ..., // existing fields
   "aggregatable_bucket_max_budget": {
     "bucket1": 32768,  // Max contribution budget for bucket1.
     "bucket2": 32768   // Max contribution budget for bucket2.
@@ -577,29 +577,29 @@ maximum contribution for each aggregatable bucket for this source.
 ```
 
 [Trigger registrations](#attribution-trigger-registration) will accept an
-optional field `aggregatable_buckets` which will be used to select the
+optional field `aggregatable_buckets`, which will be used to select the
 contribution bucket for the generated aggregate report.
 
 ```jsonc
 {
-  ...
+  ..., // existing fields
   "aggregatable_buckets": [
     {
-      "bucket": "example string",
+      "bucket": "bucket1",
       "filters": {"source_type": ["navigation"]}
     }
   ]
 }
 ```
 
-The first aggregatable bucket from the trigger that matches the source filters
+The first aggregatable bucket from the trigger that matches the source's filter data
 will be selected. If there is no bucket specified or no matching filters, the
 `L1` contribution budget will still be applied.
 
-When generating an aggregate report, in addition to performing the 
+When generating an aggregatable report, in addition to performing the 
 current `L1` budget limit check, the contributions for the report will
 be checked against the available budget in the selected bucket, if applicable.
-If the budget is insufficient, the aggregate report will be dropped.
+If the budget is insufficient, the aggregatable report will not be generated.
 
 ## Data processing through a Secure Aggregation Service
 
