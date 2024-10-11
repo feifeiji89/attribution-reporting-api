@@ -52,7 +52,7 @@ const testCases: TestCase[] = [
       },
       "aggregatable_bucket_max_budget": {
         "1": 32768,
-        "2": 32768
+        "2": 32769
       }
     }`,
     sourceType: SourceType.navigation,
@@ -102,7 +102,7 @@ const testCases: TestCase[] = [
       },
       aggregatableBucketBudget: new Map([
         ['1', 32768],
-        ['2', 32768],
+        ['2', 32769],
       ]),
     }),
   },

@@ -2415,7 +2415,7 @@ To <dfn>compute the scopes channel capacity of a source</dfn> given a positive i
 A <dfn>source-registration JSON key</dfn> is one of the following:
 
 <ul dfn-for="source-registration JSON key">
-<li>"<dfn><code>aggregatable_bucket_max_budget</code></dfn>"
+<li>"<dfn><code>aggregatable_bucket_budgets</code></dfn>"
 <li>"<dfn><code>aggregatable_debug_reporting</code></dfn>"
 <li>"<dfn><code>aggregatable_report_window</code></dfn>"
 <li>"<dfn><code>aggregation_keys</code></dfn>"
@@ -2513,8 +2513,8 @@ To <dfn>parse aggregation keys</dfn> given a [=map=] |map|:
 To <dfn>parse aggregatable bucket budget</dfn> given a [=map=] |map|:
 
 1. Let |aggregatableBucketBudget| be a new [=map=].
-1. If |map|["<code>[=source-registration JSON key/aggregatable_bucket_max_budget=]</code>"] does not [=map/exists|exist=], return |aggregatableBucketBudget|.
-1. Let |values| be |map|["<code>[=source-registration JSON key/aggregatable_bucket_max_budget=]</code>"].
+1. If |map|["<code>[=source-registration JSON key/aggregatable_bucket_budgets=]</code>"] does not [=map/exists|exist=], return |aggregatableBucketBudget|.
+1. Let |values| be |map|["<code>[=source-registration JSON key/aggregatable_bucket_budgets=]</code>"].
 1. If |values| is not a [=map=], return an error.
 1. If |values|'s [=map/size=] is greater than the
     [=max aggregatable buckets per source registration=], return an error.
@@ -3972,9 +3972,9 @@ To <dfn>find matching aggregatable bucket</dfn> given an [=attribution trigger=]
         1. Return |aggregatableBucket|'s [=aggregatable bucket/bucket=].
 1. Return null.
 
-To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn> given an
-[=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
-an [=attribution trigger=] |trigger|, and a [=string=] |matchedBucket|, run the following steps:
+To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn>
+given an [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|
+, and a [=string=] |matchedBucket|, run the following steps:
 
 1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] does not [=map/exists|exist=], return true.
 1. If |report|'s [=aggregatable attribution report/required aggregatable budget=] is greater than
@@ -4287,7 +4287,7 @@ To <dfn>trigger aggregatable attribution</dfn> given an [=attribution trigger=] 
         ("<code>[=trigger debug data type/trigger-aggregate-insufficient-budget=]</code>", null)).
 1. Let |matchedBucket| be the result of running [=find matching aggregatable bucket=] with |trigger| and |sourceToAttribute|.
 1. If |matchedBucket| is not null and the result of running [=check if an attribution source can create aggregatable contributions for matched bucket=]
-    with |report|, |sourceToAttribute|, |trigger|, and |matchedBucket| is false:
+    with |report|, |sourceToAttribute|, and |matchedBucket| is false:
     1. Return the [=triggering result=] ("<code>[=triggering status/dropped=]</code>",
         ("<code>[=trigger debug data type/trigger-aggregate-insufficient-bucket-budget=]</code>", null)).
 1. [=set/Append=] |report| to the [=aggregatable attribution report cache=].

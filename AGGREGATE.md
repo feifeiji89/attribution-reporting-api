@@ -559,17 +559,17 @@ buckets or types of attributions, addressing common challenges such as:
 
 - Allocating the privacy budget between different types of attributions
   (e.g., biddable vs. non-biddable).
-- Distributing the budget across multiple SDKs to prevent any single SDK
-  from consuming all available privacy budget.
+- Distributing the budget across multiple campaigns to prevent any
+  single campaign from consuming all available privacy budget.
 
 [Source registrations](#attribution-source-registration) will accept an optional
-field `aggregatable_bucket_max_budget`, which is a dictionary used to set the
+field `aggregatable_bucket_budgets`, which is a dictionary used to set the
 maximum contribution for each aggregatable bucket for this source.
 
 ```jsonc
 {
   ..., // existing fields
-  "aggregatable_bucket_max_budget": {
+  "aggregatable_bucket_budgets": {
     "bucket1": 32768,  // Max contribution budget for bucket1.
     "bucket2": 32768   // Max contribution budget for bucket2.
   }
