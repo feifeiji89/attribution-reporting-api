@@ -50,7 +50,7 @@ const testCases: TestCase[] = [
         "values": ["1"],
         "max_event_states": 4
       },
-      "aggregatable_bucket_max_budget": {
+      "aggregatable_bucket_budgets": {
         "1": 32768,
         "2": 32769
       }
@@ -3080,14 +3080,14 @@ const testCases: TestCase[] = [
     name: 'aggregatable-bucket-not-a-dictionary',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": ["1"]
+        "aggregatable_bucket_budgets": ["1"]
     }`,
     sourceType: SourceType.navigation,
     parseAggregatableBucket: true,
     expectedErrors: [
       {
         msg: 'must be an object',
-        path: ['aggregatable_bucket_max_budget'],
+        path: ['aggregatable_bucket_budgets'],
       },
     ],
   },
@@ -3095,7 +3095,7 @@ const testCases: TestCase[] = [
     name: 'aggregatable-bucket-too-long',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": {
+        "aggregatable_bucket_budgets": {
           "aaaaaaaaaaaaaaaaaaaaaaaaaa": 32768
         }
       }`,
@@ -3104,7 +3104,7 @@ const testCases: TestCase[] = [
     expectedErrors: [
       {
         msg: 'bucket exceeds max length per aggregatable bucket (26 > 25)',
-        path: ['aggregatable_bucket_max_budget', 'aaaaaaaaaaaaaaaaaaaaaaaaaa'],
+        path: ['aggregatable_bucket_budgets', 'aaaaaaaaaaaaaaaaaaaaaaaaaa'],
       },
     ],
   },
@@ -3112,7 +3112,7 @@ const testCases: TestCase[] = [
     name: 'aggregatable-bucket-empty',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": {
+        "aggregatable_bucket_budgets": {
           "": 32768
         }
       }`,
@@ -3123,7 +3123,7 @@ const testCases: TestCase[] = [
     name: 'aggregatable-buckets-too-many',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": {
+        "aggregatable_bucket_budgets": {
           "1": 32768,
           "2": 32768,
           "3": 32768,
@@ -3157,7 +3157,7 @@ const testCases: TestCase[] = [
     expectedErrors: [
       {
         msg: 'exceeds the maximum number of keys (25)',
-        path: ['aggregatable_bucket_max_budget'],
+        path: ['aggregatable_bucket_budgets'],
       },
     ],
   },
@@ -3165,7 +3165,7 @@ const testCases: TestCase[] = [
     name: 'aggregatable-bucket-budget-non-positive',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": {
+        "aggregatable_bucket_budgets": {
           "1": 32768,
           "2": 0,
           "3": -1
@@ -3176,11 +3176,11 @@ const testCases: TestCase[] = [
     expectedErrors: [
       {
         msg: 'must be in the range [1, 65536]',
-        path: ['aggregatable_bucket_max_budget', '2'],
+        path: ['aggregatable_bucket_budgets', '2'],
       },
       {
         msg: 'must be in the range [1, 65536]',
-        path: ['aggregatable_bucket_max_budget', '3'],
+        path: ['aggregatable_bucket_budgets', '3'],
       },
     ],
   },
@@ -3188,7 +3188,7 @@ const testCases: TestCase[] = [
     name: 'aggregatable-bucket-budget-exceeds-max',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": {
+        "aggregatable_bucket_budgets": {
           "1": 65537
         }
       }`,
@@ -3197,7 +3197,7 @@ const testCases: TestCase[] = [
     expectedErrors: [
       {
         msg: 'must be in the range [1, 65536]',
-        path: ['aggregatable_bucket_max_budget', '1'],
+        path: ['aggregatable_bucket_budgets', '1'],
       },
     ],
   },
@@ -3205,7 +3205,7 @@ const testCases: TestCase[] = [
     name: 'aggregatable-bucket-budget-not-integer',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_max_budget": {
+        "aggregatable_bucket_budgets": {
           "1": "1024"
         }
       }`,
@@ -3214,7 +3214,7 @@ const testCases: TestCase[] = [
     expectedErrors: [
       {
         msg: 'must be a number',
-        path: ['aggregatable_bucket_max_budget', '1'],
+        path: ['aggregatable_bucket_budgets', '1'],
       },
     ],
   },

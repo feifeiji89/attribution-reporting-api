@@ -767,7 +767,7 @@ function source(j: Json, ctx: Context): Maybe<Source> {
         ),
         aggregatableBucketBudget: ctx.opts.aggregatableBucket
           ? field(
-              'aggregatable_bucket_max_budget',
+              'aggregatable_bucket_budgets',
               withDefault(aggregatableBucketBudget, new Map())
             )
           : () => Maybe.some(new Map()),

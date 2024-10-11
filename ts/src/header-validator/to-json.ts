@@ -190,7 +190,7 @@ type Source = CommonDebug &
   Priority &
   (NotFullFlexSource | FullFlexSource) & {
     aggregation_keys: { [key: string]: string }
-    aggregatable_bucket_max_budget?: { [key: string]: number }
+    aggregatable_bucket_budgets?: { [key: string]: number }
     aggregatable_report_window: number
     destination: string[]
     destination_limit_priority: string
@@ -249,7 +249,7 @@ export function serializeSource(
       serializeAttributionScopes(v)
     ),
     ...(opts.aggregatableBucket && {
-      aggregatable_bucket_max_budget: Object.fromEntries(
+      aggregatable_bucket_budgets: Object.fromEntries(
         s.aggregatableBucketBudget
       ),
     }),
