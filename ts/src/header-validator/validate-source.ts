@@ -238,25 +238,14 @@ function aggregationKeys(j: Json, ctx: Context): Maybe<AggregationKeys> {
   )
 }
 
-export function aggregatableBucketLength(
-  s: string,
-  ctx: Context,
-  errPrefix: string = ''
-): boolean {
-  if (s.length > constants.maxLengthPerAggregatableBucket) {
-    ctx.error(
-      `${errPrefix}exceeds max length per aggregatable bucket (${s.length} > ${constants.maxLengthPerAggregatableBucket})`
-    )
-    return false
-  }
-  return true
-}
-
 function aggregatableBucket(
   [bucket, j]: [string, Json],
   ctx: Context
 ): Maybe<number> {
-  if (!aggregatableBucketLength(bucket, ctx, 'bucket ')) {
+  if (bucket.length > constants.maxLengthPerAggregatableBucket) {
+    ctx.error(
+      `bucket exceeds max length per aggregatable bucket (${bucket.length} > ${constants.maxLengthPerAggregatableBucket})`
+    )
     return Maybe.None
   }
   return aggregatableKeyValueValue(j, ctx)
