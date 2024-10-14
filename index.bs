@@ -3973,8 +3973,8 @@ To <dfn>find matching aggregatable bucket</dfn> given an [=attribution trigger=]
 1. Return null.
 
 To <dfn>check if an [=attribution source=] can create [=aggregatable contributions=] for matched bucket</dfn>
-given an [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|
-, and a [=string=] |matchedBucket|, run the following steps:
+given an [=aggregatable attribution report=] |report|, an [=attribution source=] |sourceToAttribute|,
+and a [=string=] |matchedBucket|, run the following steps:
 
 1. If |sourceToAttribute|'s [=attribution source/remaining aggregatable attribution bucket budget=][|matchedBucket|] does not [=map/exists|exist=], return true.
 1. If |report|'s [=aggregatable attribution report/required aggregatable budget=] is greater than
