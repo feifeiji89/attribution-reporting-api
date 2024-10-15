@@ -8,7 +8,7 @@ export type EventReportWindows = {
 export type FilterData = Map<string, Set<string>>
 
 export type AggregationKeys = Map<string, bigint>
-export type AggregatableBucketBudget = Map<string, number>
+export type NamedBudgets = Map<string, number>
 
 export enum SummaryOperator {
   count = 'count',
@@ -42,7 +42,7 @@ export type Source = reg.CommonDebug &
   reg.Priority & {
     aggregatableReportWindow: number
     aggregationKeys: AggregationKeys
-    aggregatableBucketBudget: AggregatableBucketBudget
+    namedBudgets: NamedBudgets
     destination: Set<string>
     expiry: number
     filterData: FilterData

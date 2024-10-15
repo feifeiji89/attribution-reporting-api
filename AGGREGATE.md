@@ -551,9 +551,9 @@ as when a trigger context ID is set.
 
 See [flexible_filtering.md](https://github.com/patcg-individual-drafts/private-aggregation-api/blob/main/flexible_filtering.md) for more details.
 
-### Optional: aggregatable buckets
+### Optional: named budgets
 
-Aggregatable buckets is an optional feature that gives API callers the ability 
+Named budgets is an optional feature that gives API callers the ability 
 to manage `L1` contribution budget distribution across different aggregatable
 buckets or types of attributions, addressing common challenges such as:
 
@@ -563,42 +563,42 @@ buckets or types of attributions, addressing common challenges such as:
   single campaign from consuming all available privacy budget.
 
 [Source registrations](#attribution-source-registration) will accept an optional
-field `aggregatable_bucket_budgets`, which is a dictionary used to set the
-maximum contribution for each aggregatable bucket for this source.
+field `named_budgets`, which is a dictionary used to set the
+maximum contribution for each budget name for this source.
 
 ```jsonc
 {
   ..., // existing fields
-  "aggregatable_bucket_budgets": {
-    "bucket1": 32768,  // Max contribution budget for bucket1.
-    "bucket2": 32768   // Max contribution budget for bucket2.
+  "named_budgets": {
+    "budgetName1": 32768,  // Max contribution budget for budgetName1.
+    "budgetName2": 32768   // Max contribution budget for budgetName2.
   }
 }
 ```
 
 [Trigger registrations](#attribution-trigger-registration) will accept an
-optional field `aggregatable_buckets`, which will be used to select the
-contribution bucket for the generated aggregate report.
+optional field `named_budgets`, which will be used to select the
+contribution budget name for the generated aggregatable report.
 
 ```jsonc
 {
   ..., // existing fields
-  "aggregatable_buckets": [
+  "named_budgets": [
     {
-      "bucket": "bucket1",
+      "name": "name1",
       "filters": {"source_type": ["navigation"]}
     }
   ]
 }
 ```
 
-The first aggregatable bucket from the trigger that matches the source's filter data
-will be selected. If there is no bucket specified or no matching filters, the
+The first budget name from the trigger that matches the source's filter data
+will be selected. If there is no budget name specified or no matching filters, the
 `L1` contribution budget will still be applied.
 
 When generating an aggregatable report, in addition to performing the 
 current `L1` budget limit check, the contributions for the report will
-be checked against the available budget in the selected bucket, if applicable.
+be checked against the available budget in the selected budget name, if applicable.
 If the budget is insufficient, the aggregatable report will not be generated.
 
 ## Data processing through a Secure Aggregation Service

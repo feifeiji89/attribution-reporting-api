@@ -190,7 +190,7 @@ type Source = CommonDebug &
   Priority &
   (NotFullFlexSource | FullFlexSource) & {
     aggregation_keys: { [key: string]: string }
-    aggregatable_bucket_budgets?: { [key: string]: number }
+    named_budgets?: { [key: string]: number }
     aggregatable_report_window: number
     destination: string[]
     destination_limit_priority: string
@@ -206,7 +206,7 @@ type Source = CommonDebug &
 
 export interface Options {
   fullFlex?: boolean | undefined
-  aggregatableBucket?: boolean | undefined
+  namedBudgets?: boolean | undefined
 }
 
 export function serializeSource(
@@ -248,10 +248,8 @@ export function serializeSource(
     ...ifNotNull('attribution_scopes', s.attributionScopes, (v) =>
       serializeAttributionScopes(v)
     ),
-    ...(opts.aggregatableBucket && {
-      aggregatable_bucket_budgets: Object.fromEntries(
-        s.aggregatableBucketBudget
-      ),
+    ...(opts.namedBudgets && {
+      named_budgets: Object.fromEntries(s.namedBudgets),
     }),
   }
 
@@ -321,8 +319,8 @@ function serializeEventTriggerDatum(
 }
 
 type AggregatableDedupKey = FilterPair & DedupKey
-type AggregatableBucket = FilterPair & {
-  bucket?: string
+type NamedBudget = FilterPair & {
+  name?: string
 }
 
 function serializeAggregatableDedupKey(
@@ -334,12 +332,10 @@ function serializeAggregatableDedupKey(
   }
 }
 
-function serializeAggregatableBucket(
-  b: trigger.AggregatableBucket
-): AggregatableBucket {
+function serializeNamedBudget(b: trigger.NamedBudget): NamedBudget {
   return {
     ...serializeFilterPair(b),
-    ...ifNotNull('bucket', b.bucket, (v) => v.toString()),
+    ...ifNotNull('name', b.name, (v) => v.toString()),
   }
 }
 
@@ -389,7 +385,7 @@ function serializeAggregatableValuesConfiguration(
 type Trigger = CommonDebug &
   FilterPair & {
     aggregatable_deduplication_keys: AggregatableDedupKey[]
-    aggregatable_buckets?: AggregatableBucket[]
+    named_budgets?: NamedBudget[]
     aggregatable_source_registration_time: string
     aggregatable_trigger_data: AggregatableTriggerDatum[]
     aggregatable_filtering_id_max_bytes: number
@@ -414,11 +410,8 @@ export function serializeTrigger(
       serializeAggregatableDedupKey
     ),
 
-    ...(opts.aggregatableBucket && {
-      aggregatable_buckets: Array.from(
-        t.aggregatableBuckets,
-        serializeAggregatableBucket
-      ),
+    ...(opts.namedBudgets && {
+      named_budgets: Array.from(t.namedBudgets, serializeNamedBudget),
     }),
 
     aggregatable_source_registration_time: t.aggregatableSourceRegistrationTime,

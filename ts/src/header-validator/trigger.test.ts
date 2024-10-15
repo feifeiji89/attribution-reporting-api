@@ -19,8 +19,8 @@ const testCases: jsontest.TestCase<Trigger>[] = [
         "filters": {"x": []},
         "not_filters": {"y": []}
       }],
-      "aggregatable_buckets": [{
-        "bucket": "1",
+      "named_budgets": [{
+        "name": "1",
         "filters": {"x": []},
         "not_filters": {"y": []}
       }],
@@ -54,7 +54,7 @@ const testCases: jsontest.TestCase<Trigger>[] = [
       },
       "attribution_scopes": ["1"]
     }`,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expected: Maybe.some({
       aggregatableDedupKeys: [
         {
@@ -73,9 +73,9 @@ const testCases: jsontest.TestCase<Trigger>[] = [
           ],
         },
       ],
-      aggregatableBuckets: [
+      namedBudgets: [
         {
-          bucket: '1',
+          name: '1',
           positive: [
             {
               lookbackWindow: null,
@@ -1717,49 +1717,49 @@ const testCases: jsontest.TestCase<Trigger>[] = [
     ],
   },
 
-  // Aggregatable bucket.
+  // Named budgets.
   {
-    name: 'aggregatable-buckets-wrong-type',
-    input: `{"aggregatable_buckets": 1}`,
-    parseAggregatableBucket: true,
+    name: 'named-budgets-wrong-type',
+    input: `{"named_budgets": 1}`,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
-        path: ['aggregatable_buckets'],
+        path: ['named_budgets'],
         msg: 'must be a list',
       },
     ],
   },
   {
-    name: 'aggregatable-buckets-value-wrong-type',
-    input: `{"aggregatable_buckets": [1]}`,
-    parseAggregatableBucket: true,
+    name: 'named-budgets-value-wrong-type',
+    input: `{"named_budgets": [1]}`,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
-        path: ['aggregatable_buckets', 0],
+        path: ['named_budgets', 0],
         msg: 'must be an object',
       },
     ],
   },
   {
-    name: 'aggregatable-bucket-wrong-type',
-    input: `{"aggregatable_buckets": [{
-      "bucket": 1
+    name: 'named-budget-wrong-type',
+    input: `{"named_budgets": [{
+      "name": 1
     }]}`,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
-        path: ['aggregatable_buckets', 0, 'bucket'],
+        path: ['named_budgets', 0, 'name'],
         msg: 'must be a string',
       },
     ],
   },
   {
-    name: 'aggregatable_bucket-missing-bucket-name',
-    input: `{"aggregatable_buckets": [{
+    name: 'named_budget-missing-name',
+    input: `{"named_budgets": [{
       "filters": [],
       "not_filters": []
     }]}`,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
   },
 ]
 
@@ -1769,7 +1769,7 @@ testCases.forEach((tc) =>
     trigger.validator({
       vsv: { ...vsv.Chromium, ...tc.vsv },
       fullFlex: tc.parseFullFlex,
-      aggregatableBucket: tc.parseAggregatableBucket,
+      namedBudgets: tc.parseNamedBudgets,
     })
   )
 )

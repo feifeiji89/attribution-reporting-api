@@ -50,13 +50,13 @@ const testCases: TestCase[] = [
         "values": ["1"],
         "max_event_states": 4
       },
-      "aggregatable_bucket_budgets": {
+      "named_budgets": {
         "1": 32768,
         "2": 32769
       }
     }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expected: Maybe.some({
       aggregatableReportWindow: 3601,
       aggregationKeys: new Map([['a', 15n]]),
@@ -100,7 +100,7 @@ const testCases: TestCase[] = [
         values: new Set<string>('1'),
         maxEventStates: 4,
       },
-      aggregatableBucketBudget: new Map([
+      namedBudgets: new Map([
         ['1', 32768],
         ['2', 32769],
       ]),
@@ -3075,55 +3075,55 @@ const testCases: TestCase[] = [
     ],
   },
 
-  // Aggregatable bucket.
+  // Named budgets.
   {
-    name: 'aggregatable-bucket-not-a-dictionary',
+    name: 'named_budgets-not-a-dictionary',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": ["1"]
+        "named_budgets": ["1"]
     }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
         msg: 'must be an object',
-        path: ['aggregatable_bucket_budgets'],
+        path: ['named_budgets'],
       },
     ],
   },
   {
-    name: 'aggregatable-bucket-too-long',
+    name: 'budget-name-too-long',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": {
+        "named_budgets": {
           "aaaaaaaaaaaaaaaaaaaaaaaaaa": 32768
         }
       }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
-        msg: 'bucket exceeds max length per aggregatable bucket (26 > 25)',
-        path: ['aggregatable_bucket_budgets', 'aaaaaaaaaaaaaaaaaaaaaaaaaa'],
+        msg: 'name exceeds max length per budget name (26 > 25)',
+        path: ['named_budgets', 'aaaaaaaaaaaaaaaaaaaaaaaaaa'],
       },
     ],
   },
   {
-    name: 'aggregatable-bucket-empty',
+    name: 'budget-name-empty',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": {
+        "named_budgets": {
           "": 32768
         }
       }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
   },
   {
-    name: 'aggregatable-buckets-too-many',
+    name: 'named_budgets-too-many',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": {
+        "named_budgets": {
           "1": 32768,
           "2": 32768,
           "3": 32768,
@@ -3153,68 +3153,68 @@ const testCases: TestCase[] = [
         }
       }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
         msg: 'exceeds the maximum number of keys (25)',
-        path: ['aggregatable_bucket_budgets'],
+        path: ['named_budgets'],
       },
     ],
   },
   {
-    name: 'aggregatable-bucket-budget-non-positive',
+    name: 'named-budget-non-positive',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": {
+        "named_budgets": {
           "1": 32768,
           "2": 0,
           "3": -1
         }
       }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
         msg: 'must be in the range [1, 65536]',
-        path: ['aggregatable_bucket_budgets', '2'],
+        path: ['named_budgets', '2'],
       },
       {
         msg: 'must be in the range [1, 65536]',
-        path: ['aggregatable_bucket_budgets', '3'],
+        path: ['named_budgets', '3'],
       },
     ],
   },
   {
-    name: 'aggregatable-bucket-budget-exceeds-max',
+    name: 'named-budget-exceeds-max',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": {
+        "named_budgets": {
           "1": 65537
         }
       }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
         msg: 'must be in the range [1, 65536]',
-        path: ['aggregatable_bucket_budgets', '1'],
+        path: ['named_budgets', '1'],
       },
     ],
   },
   {
-    name: 'aggregatable-bucket-budget-not-integer',
+    name: 'named-budget-not-integer',
     input: `{
         "destination": "https://a.test",
-        "aggregatable_bucket_budgets": {
+        "named_budgets": {
           "1": "1024"
         }
       }`,
     sourceType: SourceType.navigation,
-    parseAggregatableBucket: true,
+    parseNamedBudgets: true,
     expectedErrors: [
       {
         msg: 'must be a number',
-        path: ['aggregatable_bucket_budgets', '1'],
+        path: ['named_budgets', '1'],
       },
     ],
   },
@@ -3228,7 +3228,7 @@ testCases.forEach((tc) =>
       sourceType: tc.sourceType ?? SourceType.navigation,
       fullFlex: tc.parseFullFlex,
       noteInfoGain: tc.noteInfoGain,
-      aggregatableBucket: tc.parseAggregatableBucket,
+      namedBudgets: tc.parseNamedBudgets,
     })
   )
 )
