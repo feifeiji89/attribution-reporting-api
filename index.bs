@@ -926,7 +926,7 @@ An aggregatable dedup key is a [=struct=] with the following items:
 
 <h3 dfn-type=dfn>Named budget</h3>
 
-An named budget is a [=struct=] with the following items:
+A named budget is a [=struct=] with the following items:
 
 <dl dfn-for="named budget">
 : <dfn>name</dfn>
