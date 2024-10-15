@@ -2852,8 +2852,8 @@ To <dfn noexport>parse source-registration JSON</dfn> given a [=byte sequence=]
         |value|["<code>[=source-registration JSON key/aggregatable_debug_reporting=]</code>"],
         |aggregatableDebugBudget|, and |aggregatableDebugReportingConfig|.
 1. Let |aggregatableAttributionBudget| be [=allowed aggregatable budget per source=] - |aggregatableDebugBudget|.
-1. Let |aggregatableAttributionBucketBudget| be the result of [=parsing named budgets for source=] with |value|.
-1. If |aggregatableAttributionBucketBudget| is an error, return it.
+1. Let |namedBudgets| be the result of [=parsing named budgets for source=] with |value|.
+1. If |namedBudgets| is an error, return it.
 1. If [=automation local testing mode=] is true, set |epsilon| to `∞`.
 1. Let |source| be a new [=attribution source=] struct whose items are:
 
@@ -2894,9 +2894,9 @@ To <dfn noexport>parse source-registration JSON</dfn> given a [=byte sequence=]
     : [=attribution source/remaining aggregatable attribution budget=]
     :: |aggregatableAttributionBudget|
     : [=attribution source/named budgets=]
-    :: |aggregatableAttributionBucketBudget|
+    :: |namedBudgets|
     : [=attribution source/remaining named budgets=]
-    :: |aggregatableAttributionBucketBudget|
+    :: |namedBudgets|
     : [=attribution source/debug reporting enabled=]
     :: |debugReportingEnabled|
     : [=attribution source/trigger-data matching mode=]
