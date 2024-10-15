@@ -578,7 +578,7 @@ maximum contribution for each budget name for this source.
 
 [Trigger registrations](#attribution-trigger-registration) will accept an
 optional field `named_budgets`, which will be used to select the
-contribution budget name for the generated aggregatable report.
+named budget for the generated aggregatable report.
 
 ```jsonc
 {
