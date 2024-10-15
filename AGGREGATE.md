@@ -554,8 +554,8 @@ See [flexible_filtering.md](https://github.com/patcg-individual-drafts/private-a
 ### Optional: named budgets
 
 Named budgets is an optional feature that gives API callers the ability 
-to manage `L1` contribution budget distribution across different aggregatable
-buckets or types of attributions, addressing common challenges such as:
+to manage `L1` contribution budget distribution across different types of
+attributions, addressing common challenges such as:
 
 - Allocating the privacy budget between different types of attributions
   (e.g., biddable vs. non-biddable).
@@ -564,7 +564,7 @@ buckets or types of attributions, addressing common challenges such as:
 
 [Source registrations](#attribution-source-registration) will accept an optional
 field `named_budgets`, which is a dictionary used to set the
-maximum contribution for each budget name for this source.
+maximum contribution for each named budget for this source.
 
 ```jsonc
 {
@@ -592,7 +592,7 @@ named budget for the generated aggregatable report.
 }
 ```
 
-The first budget name from the trigger that matches the source's filter data
+The first named budget from the trigger that matches the source's filter data
 will be selected. If there is no budget name specified or no matching filters, the
 `L1` contribution budget will still be applied.
 
