@@ -3077,7 +3077,7 @@ const testCases: TestCase[] = [
 
   // Named budgets.
   {
-    name: 'named_budgets-not-a-dictionary',
+    name: 'named-budgets-not-a-dictionary',
     input: `{
         "destination": "https://a.test",
         "named_budgets": ["1"]
@@ -3120,7 +3120,7 @@ const testCases: TestCase[] = [
     parseNamedBudgets: true,
   },
   {
-    name: 'named_budgets-too-many',
+    name: 'named-budgets-too-many',
     input: `{
         "destination": "https://a.test",
         "named_budgets": {
