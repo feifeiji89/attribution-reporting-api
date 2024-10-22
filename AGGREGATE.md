@@ -559,8 +559,8 @@ attributions, addressing common challenges such as:
 
 - Allocating the privacy budget between different types of attributions
   (e.g., biddable vs. non-biddable).
-- Distributing the budget across multiple campaigns to prevent any
-  single campaign from consuming all available privacy budget.
+- Distributing the budget across multiple product categories to prevent any
+  single product category from consuming all available privacy budget.
 
 [Source registrations](#attribution-source-registration) will accept an optional
 field `named_budgets`, which is a dictionary used to set the
